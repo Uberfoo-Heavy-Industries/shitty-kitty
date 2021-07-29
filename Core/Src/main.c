@@ -85,6 +85,11 @@ const osThreadAttr_t mainTask_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for outputBinarySem */
+osSemaphoreId_t outputBinarySemHandle;
+const osSemaphoreAttr_t outputBinarySem_attributes = {
+  .name = "outputBinarySem"
+};
 /* USER CODE BEGIN PV */
 static const uint8_t DEV_ADDR = 0xc4;
 
@@ -158,6 +163,10 @@ int main(void)
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
+
+  /* Create the semaphores(s) */
+  /* creation of outputBinarySem */
+  outputBinarySemHandle = osSemaphoreNew(1, 1, &outputBinarySem_attributes);
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
@@ -471,7 +480,9 @@ int _write(int file, char *ptr, int len)
     // HAL_UART_Transmit(&huart1, (uint8_t *)ptr, len, 0xFFFF);
     size_t returnLength = 0;
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
+        xSemaphoreTake(outputBinarySemHandle, portMAX_DELAY);
         returnLength = xStreamBufferSend(stdoutBufferHandle, ptr, len, portMAX_DELAY);
+        xSemaphoreGive(outputBinarySemHandle);
     }
     return returnLength;
 }
@@ -527,10 +538,12 @@ void StartCommsTask(void *argument)
       if (xStreamBufferIsEmpty(stdoutBufferHandle) == pdFALSE) {
           size_t len;
           // Read up to len bytes from the buffer
+          xSemaphoreTake(outputBinarySemHandle, portMAX_DELAY);
           if ((len = xStreamBufferReceive(stdoutBufferHandle, outputBuffer, OUTPUT_BUFF_LEN, portMAX_DELAY)) > 0)
           {
               CDC_Transmit_FS((uint8_t *)outputBuffer, len);
           }
+          xSemaphoreGive(outputBinarySemHandle);
       } else {
           taskYIELD();
       }

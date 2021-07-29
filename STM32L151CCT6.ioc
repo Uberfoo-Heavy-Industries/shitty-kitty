@@ -1,11 +1,12 @@
 #MicroXplorer Configuration settings - do not modify
+FREERTOS.BinarySemaphores01=outputBinarySem,Dynamic,NULL
 FREERTOS.FootprintOK=true
 FREERTOS.HEAP_NUMBER=4
-FREERTOS.IPParameters=Tasks01,FootprintOK,configTOTAL_HEAP_SIZE,configMINIMAL_STACK_SIZE,configCHECK_FOR_STACK_OVERFLOW,HEAP_NUMBER
+FREERTOS.IPParameters=Tasks01,FootprintOK,configTOTAL_HEAP_SIZE,configMINIMAL_STACK_SIZE,configCHECK_FOR_STACK_OVERFLOW,HEAP_NUMBER,BinarySemaphores01
 FREERTOS.Tasks01=defaultTask,24,64,StartDefaultTask,Default,NULL,Dynamic,NULL,NULL;commsTask,24,128,StartCommsTask,Default,NULL,Dynamic,NULL,NULL;mainTask,24,256,StartMainTask,Default,NULL,Dynamic,NULL,NULL
 FREERTOS.configCHECK_FOR_STACK_OVERFLOW=2
 FREERTOS.configMINIMAL_STACK_SIZE=64
-FREERTOS.configTOTAL_HEAP_SIZE=20432
+FREERTOS.configTOTAL_HEAP_SIZE=20416
 File.Version=6
 GPIO.groupedBy=Group By Peripherals
 I2C1.I2C_Mode=I2C_Fast
