@@ -33,6 +33,9 @@ void ledModeMenuFunc();
 void ledModeOnFunc();
 void ledModeOffFunc();
 void ledModeBlinkFunc();
+void shittyPixelMenuFunc();
+void shittyPixelModeFunc();
+void shittyPixelInfoFunc();
 
 extern menu_t * current_menu;
 

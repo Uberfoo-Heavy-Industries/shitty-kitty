@@ -10,6 +10,7 @@
 #include "readline.h"
 #include "advent.h"
 #include "userdata.h"
+#include "shittypixel.h"
 
 /* Definitions for adventureTask */
 osThreadId_t adventureTaskHandle;
@@ -54,6 +55,11 @@ const menu_t mainMenu = {
             },
             {
                     .key = '3',
+                    .label = "Shitty Pixel",
+                    .func = &shittyPixelMenuFunc
+            },
+            {
+                    .key = '4',
                     .label = "Game",
                     .func = &adventureMenuFunc
             }
@@ -70,7 +76,7 @@ const menu_t ledMenu = {
                     .func = &ledModeMenuFunc
             },
             {
-                    .key = '2',
+                    .key = 'x',
                     .label = "Exit Menu",
                     .func = &mainMenuFunc
             }
@@ -98,6 +104,37 @@ const menu_t ledModeMenu = {
             }
         }
 };
+
+const menu_t shittyPixelMenu = {
+        .title = "Shitty Pixel Menu",
+        .itemCount = 3,
+        .items = (const menu_item_t []) {
+            {
+                    .key = '1',
+                    .label = "Get Info",
+                    .func = &shittyPixelInfoFunc
+            },
+            {
+                    .key = '2',
+                    .label = "Set Mode",
+                    .func = &shittyPixelModeFunc
+            },
+            {
+                    .key = 'x',
+                    .label = "Exit Menu",
+                    .func = &mainMenuFunc
+            }
+       }
+};
+
+uint8_t promptPortNum() {
+	uint8_t i;
+	if (!sscanf(readline("Enter SAO port > "), "%d", &i) || i > 2 || i < 1) {
+		printf("Invalid port number!\r\n");
+		return -1;
+	}
+	return i - 1;
+}
 
 void aboutMenuFunc() {
     printf("\r\n ** Shitty OS version 1.69bis ** \r\n\r\n");
@@ -134,4 +171,30 @@ void ledModeOffFunc() {
 void ledModeBlinkFunc() {
     SetConfigLedMode(LED_MODE_BLINK);
     current_menu = (menu_t *)&ledMenu;
+}
+
+void shittyPixelMenuFunc() {
+    current_menu = (menu_t *)&shittyPixelMenu;
+}
+
+void shittyPixelModeFunc() {
+	uint8_t port = promptPortNum();
+	if (port < 0) return;
+
+	uint8_t i;
+	if (!sscanf(readline("Enter mode > "), "%d", &i)) {
+		printf("Invalid number!\r\n");
+		return;
+	}
+	SetPixelMode(port, i);
+}
+
+void shittyPixelInfoFunc() {
+	uint8_t port = promptPortNum();
+	if (port < 0) return;
+
+	printf("Made for DEF CON %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
+	printf("Maker ID:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
+	printf("SAO Type:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
+	printf("Arbitrary: %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
 }
