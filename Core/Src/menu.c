@@ -41,7 +41,7 @@ menu_func_t findMenuFunc(char c, menu_t * menu) {
 
 const menu_t mainMenu = {
         .title = "Main Menu",
-        .itemCount = 3,
+        .itemCount = 4,
         .items = (const menu_item_t []) {
             {
                     .key = '1',
@@ -127,8 +127,8 @@ const menu_t shittyPixelMenu = {
        }
 };
 
-uint8_t promptPortNum() {
-	uint8_t i;
+int promptPortNum() {
+	int i;
 	if (!sscanf(readline("Enter SAO port > "), "%d", &i) || i > 2 || i < 1) {
 		printf("Invalid port number!\r\n");
 		return -1;
@@ -178,10 +178,10 @@ void shittyPixelMenuFunc() {
 }
 
 void shittyPixelModeFunc() {
-	uint8_t port = promptPortNum();
+	int port = promptPortNum();
 	if (port < 0) return;
 
-	uint8_t i;
+	int i;
 	if (!sscanf(readline("Enter mode > "), "%d", &i)) {
 		printf("Invalid number!\r\n");
 		return;
@@ -190,11 +190,11 @@ void shittyPixelModeFunc() {
 }
 
 void shittyPixelInfoFunc() {
-	uint8_t port = promptPortNum();
+	int port = promptPortNum();
 	if (port < 0) return;
 
 	printf("Made for DEF CON %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
-	printf("Maker ID:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
-	printf("SAO Type:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
-	printf("Arbitrary: %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
+	printf("Maker ID:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_MAKER));
+	printf("SAO Type:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_SAO_TYPE));
+	printf("Arbitrary: %d\r\n", GetPixelData(port, PIXEL_EEPROM_ARBITRARY));
 }

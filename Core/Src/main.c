@@ -38,6 +38,7 @@
 #include "menu.h"
 #include "readline.h"
 #include "userdata.h"
+#include "sao.h"
 
 /* USER CODE END Includes */
 
@@ -501,7 +502,11 @@ void StartDefaultTask(void *argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
+
   InitUserConfig();
+  SAOPortInit(0, &hi2c1, &huart1);
+  SAOPortInit(1, &hi2c2, &huart2);
+
   /* Infinite loop */
   for(;;)
   {
