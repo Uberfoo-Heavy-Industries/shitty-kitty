@@ -69,7 +69,7 @@ extern osSemaphoreId_t adventureSemHandle;
 #define LED_Pin GPIO_PIN_2
 #define LED_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-#define OUTPUT_BUFF_LEN 64
+#define OUTPUT_BUFF_LEN 1024
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

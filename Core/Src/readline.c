@@ -17,7 +17,7 @@ char readlineBuffer[READLINE_BUFF_LEN];
 StreamBufferHandle_t stdinBufferHandle;
 
 void init_input() {
-    stdinBufferHandle = xStreamBufferCreate(256, 1);
+    stdinBufferHandle = xStreamBufferCreate(64, 1);
 }
 
 int handleInput(char *ptr, int len) {
@@ -28,8 +28,7 @@ int handleInput(char *ptr, int len) {
     return returnLength;
 }
 
-char *readline(char *prompt) {
-    memchr(readlineBuffer, '\0', READLINE_BUFF_LEN);
+char *readline(const char *prompt) {
     printf(prompt);
     int i = 0;
     for (;;) {
@@ -40,6 +39,15 @@ char *readline(char *prompt) {
         {
             // TODO: Handle backspaces
             i += len;
+            if (data[len - 1] == 0x7F) {
+                data[len - 1] = '\0';
+                if (data == readlineBuffer) {
+                    i--;
+                } else {
+                    readlineBuffer[i - 2] = '\0';
+                    i -= 2;
+                }
+            }
             if (data[len - 1] == '\r' || i >= READLINE_BUFF_LEN) {
                 data[len - 1] = '\0';
                 return readlineBuffer;

@@ -76,7 +76,7 @@ const osThreadAttr_t defaultTask_attributes = {
 osThreadId_t commsTaskHandle;
 const osThreadAttr_t commsTask_attributes = {
   .name = "commsTask",
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for mainTask */
@@ -96,7 +96,7 @@ static const uint8_t DEV_ADDR = 0xc4;
 
 StreamBufferHandle_t stdoutBufferHandle;
 
-char * outputBuffer[OUTPUT_BUFF_LEN];
+char outputBuffer[OUTPUT_BUFF_LEN];
 
 /* USER CODE END PV */
 
@@ -179,7 +179,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_QUEUES */
   init_input();
-  stdoutBufferHandle = xStreamBufferCreate(256, 1);
+  stdoutBufferHandle = xStreamBufferCreate(1024, 1);
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -482,7 +482,9 @@ int _write(int file, char *ptr, int len)
     size_t returnLength = 0;
     if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING) {
         xSemaphoreTake(outputBinarySemHandle, portMAX_DELAY);
-        returnLength = xStreamBufferSend(stdoutBufferHandle, ptr, len, portMAX_DELAY);
+        //while (returnLength < len) {
+            returnLength += xStreamBufferSend(stdoutBufferHandle, ptr + returnLength, len - returnLength, portMAX_DELAY);
+        //}
         xSemaphoreGive(outputBinarySemHandle);
     }
     return returnLength;
@@ -510,6 +512,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+
       if (GetConfig()->ledMode == LED_MODE_ON) {
           HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
       }
@@ -540,18 +543,17 @@ void StartCommsTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
+      xSemaphoreTake(outputBinarySemHandle, portMAX_DELAY);
       if (xStreamBufferIsEmpty(stdoutBufferHandle) == pdFALSE) {
           size_t len;
           // Read up to len bytes from the buffer
-          xSemaphoreTake(outputBinarySemHandle, portMAX_DELAY);
           if ((len = xStreamBufferReceive(stdoutBufferHandle, outputBuffer, OUTPUT_BUFF_LEN, portMAX_DELAY)) > 0)
           {
               CDC_Transmit_FS((uint8_t *)outputBuffer, len);
           }
-          xSemaphoreGive(outputBinarySemHandle);
-      } else {
-          taskYIELD();
       }
+      xSemaphoreGive(outputBinarySemHandle);
+      taskYIELD();
   }
   /* USER CODE END StartCommsTask */
 }

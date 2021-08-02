@@ -11,7 +11,7 @@
 
 #define READLINE_BUFF_LEN 64
 
-char *readline(char *prompt);
+char *readline(const char *prompt);
 void init_input();
 
 #endif /* INC_READLINE_H_ */

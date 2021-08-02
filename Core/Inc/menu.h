@@ -36,6 +36,12 @@ void ledModeBlinkFunc();
 void shittyPixelMenuFunc();
 void shittyPixelModeFunc();
 void shittyPixelInfoFunc();
+void shittyPixelRedFunc();
+void shittyPixelGreenFunc();
+void shittyPixelBlueFunc();
+void shittyPixelSpeedFunc();
+void shittyPixelLoadFunc();
+void shittyPixelSaveFunc();
 
 extern menu_t * current_menu;
 
