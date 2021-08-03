@@ -37,12 +37,12 @@ char *readline(const char *prompt) {
         // Read up to READLINE_BUFF_LEN bytes from the buffer
         if ((len = xStreamBufferReceive(stdinBufferHandle, data, READLINE_BUFF_LEN - i, portMAX_DELAY)) > 0)
         {
-            // TODO: Handle backspaces
             i += len;
             if (data[len - 1] == 0x7F) {
                 data[len - 1] = '\0';
                 if (data == readlineBuffer) {
                     i--;
+                    printf(" ");
                 } else {
                     readlineBuffer[i - 2] = '\0';
                     i -= 2;
