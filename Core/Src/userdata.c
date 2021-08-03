@@ -28,7 +28,7 @@ uint32_t WriteConfigToFlash()
 
     /* Fill EraseInit structure*/
     EraseInitStruct.TypeErase   = FLASH_TYPEERASE_PAGES;
-    EraseInitStruct.PageAddress = 0x0803FC00;
+    EraseInitStruct.PageAddress = CONFIG_PAGE_ADDR;
     EraseInitStruct.NbPages     = 1;
 
     if (HAL_FLASHEx_Erase(&EraseInitStruct, &PAGEError) != HAL_OK)
@@ -41,10 +41,10 @@ uint32_t WriteConfigToFlash()
 
     uint8_t *data = (uint8_t*)&current_config;
     for (int i = 0; i < sizeof(userconfig_t); i += 4) {
-        if (HAL_FLASH_Program(FLASH_TYPEPROGRAMDATA_WORD, 0x0803FC00 + i, data[i]) != HAL_OK) {
+        if (HAL_FLASH_Program(FLASH_TYPEPROGRAMDATA_WORD, CONFIG_PAGE_ADDR + i, data[i]) != HAL_OK) {
             /*Error occurred while page erase.*/
             uint32_t err = HAL_FLASH_GetError();
-            printf("Error writing flash @0x%08x: %ld\r\n\r\n", 0x0803FC00 + i, err);
+            printf("Error writing flash @0x%08x: %ld\r\n\r\n", CONFIG_PAGE_ADDR + i, err);
             return err;
 
         }

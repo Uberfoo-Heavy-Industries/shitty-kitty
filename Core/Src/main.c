@@ -579,7 +579,7 @@ void StartMainTask(void *argument)
           while (strlen(line = readline("> ")) <= 0) {
               displayMenu(current_menu);
           }
-          func = findMenuFunc(line[0], current_menu);
+          func = findMenuFunc(line, current_menu);
       }
       func();
       func = NULL;

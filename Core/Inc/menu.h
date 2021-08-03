@@ -11,7 +11,7 @@
 typedef void (* menu_func_t)();
 
 typedef struct {
-    const char key;
+    const char * const key;
     const char * const label;
     const menu_func_t func;
 } menu_item_t;
@@ -23,7 +23,7 @@ typedef struct {
 } menu_t;
 
 void displayMenu(menu_t * menu);
-menu_func_t findMenuFunc(char c, menu_t * menu);
+menu_func_t findMenuFunc(char * c, menu_t * menu);
 
 void mainMenuFunc();
 void aboutMenuFunc();

@@ -24,16 +24,16 @@ const osThreadAttr_t adventureTask_attributes = {
 menu_t * current_menu = (menu_t *)&mainMenu;
 
 void displayMenu(menu_t * menu) {
-    printf("   %s\r\n\r\n", menu->title);
+    printf("\r\n   %s\r\n\r\n", menu->title);
     for (int i = 0; i < menu->itemCount; i++) {
-        printf(" %c. %s\r\n", menu->items[i].key, menu->items[i].label);
+        printf(" %s. %s\r\n", menu->items[i].key, menu->items[i].label);
     }
     printf("\r\n");
 }
 
-menu_func_t findMenuFunc(char c, menu_t * menu) {
+menu_func_t findMenuFunc(char * c, menu_t * menu) {
     for (int i = 0; i < menu->itemCount; i++) {
-        if (menu->items[i].key == c) {
+        if (strcmp(menu->items[i].key, c) == 0) {
             return menu->items[i].func;
         }
     }
@@ -45,22 +45,22 @@ const menu_t mainMenu = {
         .itemCount = 4,
         .items = (const menu_item_t []) {
             {
-                    .key = '1',
+                    .key = "1",
                     .label = "About",
                     .func = &aboutMenuFunc
             },
             {
-                    .key = '2',
+                    .key = "2",
                     .label = "LED",
                     .func = &ledMenuFunc
             },
             {
-                    .key = '3',
+                    .key = "3",
                     .label = "Shitty Pixel",
                     .func = &shittyPixelMenuFunc
             },
             {
-                    .key = '4',
+                    .key = "4",
                     .label = "Game",
                     .func = &adventureMenuFunc
             }
@@ -72,12 +72,12 @@ const menu_t ledMenu = {
         .itemCount = 2,
         .items = (const menu_item_t []) {
             {
-                    .key = '1',
+                    .key = "1",
                     .label = "Set LED Mode",
                     .func = &ledModeMenuFunc
             },
             {
-                    .key = 'x',
+                    .key = "x",
                     .label = "Exit Menu",
                     .func = &mainMenuFunc
             }
@@ -89,17 +89,17 @@ const menu_t ledModeMenu = {
         .itemCount = 3,
         .items = (const menu_item_t []) {
             {
-                    .key = '1',
+                    .key = "1",
                     .label = "ON",
                     .func = &ledModeOnFunc
             },
             {
-                    .key = '2',
+                    .key = "2",
                     .label = "OFF",
                     .func = &ledModeOffFunc
             },
             {
-                    .key = '3',
+                    .key = "3",
                     .label = "BLINK",
                     .func = &ledModeBlinkFunc
             }
@@ -111,47 +111,47 @@ const menu_t shittyPixelMenu = {
         .itemCount = 9,
         .items = (const menu_item_t []) {
             {
-                    .key = '1',
+                    .key = "1",
                     .label = "Get Info",
                     .func = &shittyPixelInfoFunc
             },
             {
-                    .key = '2',
+                    .key = "2",
                     .label = "Set Mode",
                     .func = &shittyPixelModeFunc
             },
             {
-                    .key = '3',
+                    .key = "3",
                     .label = "Set Speed",
                     .func = &shittyPixelSpeedFunc
             },
             {
-                    .key = '4',
+                    .key = "4",
                     .label = "Set Red",
                     .func = &shittyPixelRedFunc
             },
             {
-                    .key = '5',
+                    .key = "5",
                     .label = "Set Green",
                     .func = &shittyPixelGreenFunc
             },
             {
-                    .key = '6',
+                    .key = "6",
                     .label = "Set Blue",
                     .func = &shittyPixelBlueFunc
             },
             {
-                    .key = '7',
+                    .key = "7",
                     .label = "Save Pixel Settings",
                     .func = &shittyPixelSaveFunc
             },
             {
-                    .key = '8',
+                    .key = "8",
                     .label = "Load Pixel Settings",
                     .func = &shittyPixelLoadFunc
             },
             {
-                    .key = 'x',
+                    .key = "x",
                     .label = "Exit Menu",
                     .func = &mainMenuFunc
             }
@@ -295,7 +295,13 @@ void shittyPixelInfoFunc() {
 	int port = promptPortNum();
 	if (port < 0) return;
 
-	printf("Made for DEF CON %d\r\n", GetPixelData(port, PIXEL_EEPROM_DC_YEAR));
+	int16_t i = GetPixelData(port, PIXEL_EEPROM_DC_YEAR);
+
+	if (i < 0) {
+	    printf("\r\nShitty Pixel not detected on SAO port %d.\r\n", port + 1);
+	    return;
+	}
+	printf("\r\nMade for DEF CON %d\r\n", i);
 	printf("Maker ID:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_MAKER));
 	printf("SAO Type:  %d\r\n", GetPixelData(port, PIXEL_EEPROM_SAO_TYPE));
 	printf("Arbitrary: %d\r\n", GetPixelData(port, PIXEL_EEPROM_ARBITRARY));

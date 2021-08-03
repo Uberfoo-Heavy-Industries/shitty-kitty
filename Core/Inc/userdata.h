@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 
+#define CONFIG_PAGE_ADDR 0x0803FC00
 typedef enum {
     LED_MODE_ON,
     LED_MODE_OFF,

@@ -33,6 +33,6 @@ void SetPixelColor(size_t port, uint8_t color, uint8_t value);
 void SavePixelState(size_t port);
 void LoadPixelState(size_t port);
 
-uint8_t GetPixelData(size_t port, uint8_t data);
+int16_t GetPixelData(size_t port, uint8_t data);
 
 #endif /* INC_SHITTYPIXEL_H_ */
