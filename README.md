@@ -41,4 +41,4 @@ On Windows platforms, you can use PuTTY to connect to the Shitty Kitty. Just cli
 
 ![image](https://user-images.githubusercontent.com/13969279/128649953-f6506a52-f82f-4e62-8431-7cc47cb587f9.png)
 
-Press Open and a terminal window should open. Enjoy!
+Press Open and a terminal window should open. Now just press enter and the menu should appear. Enjoy!
